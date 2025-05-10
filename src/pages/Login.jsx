@@ -64,7 +64,7 @@ if(token){
           {state === "Sign Up" ? "Create Account" : "Login"}
         </p>
         <p>
-          Please {state === "Sign Up" ? "Sign up" : "Login"} to book appointment $$$$$
+          Please {state === "Sign Up" ? "Sign up" : "Login"} to book appointment
         </p>
         {state === "Sign Up" && (
           <div className="w-full">
