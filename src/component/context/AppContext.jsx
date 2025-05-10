@@ -23,7 +23,7 @@ const AppContextProvider = (props) => {
 
   const getDoctorsData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}doctors/list`);
+      const { data } = await axios.get(`${backendUrl}/doctors/list`);
       if (data.success) {
         setDoctors(data.doctors);
       } else {
@@ -37,7 +37,7 @@ const AppContextProvider = (props) => {
 
   const userProfileData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}user/get-profile`, {
+      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
         headers: { token },
       });
 

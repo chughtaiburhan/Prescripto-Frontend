@@ -58,7 +58,7 @@ const Appointment = () => {
       const slotDate = `${day}_${month}_${year}`;
 
       const { data } = await axios.post(
-        `${backendUrl}user/book-appointment`,
+        `${backendUrl}/user/book-appointment`,
         { docId, slotDate, slotTime },
         { headers: { token } }
       );
