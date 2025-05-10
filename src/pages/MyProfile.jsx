@@ -38,7 +38,7 @@ const MyProfile = () => {
       if (image) formData.append("image", image);
 
       const { data } = await axios.post(
-        `${backendUrl}user/update-profile`,
+        `${backendUrl}/user/update-profile`,
         formData,
         { headers: { token } }
       );
