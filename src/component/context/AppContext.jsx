@@ -14,12 +14,12 @@ const AppContextProvider = (props) => {
   const [userData, setUserData] = useState(false);
 
   // 👇 Load token from localStorage on first load
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
-    }
-  }, []);
+ useEffect(() => {
+  const savedToken = localStorage.getItem("token");
+  if (savedToken) {
+    setToken(savedToken);  // Set the token in the context
+  }
+}, []);
 
   const getDoctorsData = async () => {
     try {
@@ -36,33 +36,34 @@ const AppContextProvider = (props) => {
   };
 
   const userProfileData = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
-        headers: { token },
-      });
+  try {
+    const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
+      headers: { Authorization: `Bearer ${token}` },  // Use Bearer token format
+    });
 
-      if (data.success) {
-        setUserData(data.userData);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || error.message);
+    if (data.success) {
+      setUserData(data.userData);
+    } else {
+      toast.error(data.message);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+};
+
 
   useEffect(() => {
     getDoctorsData();
   }, []); // ✅ Prevent infinite calls
 
-  useEffect(() => {
-    if (token) {
-      userProfileData();
-    } else {
-      setUserData(false);
-    }
-  }, [token]);
+ useEffect(() => {
+  if (token) {
+    userProfileData();
+  } else {
+    setUserData(false);
+  }
+}, [token]); 
 
   const value = {
     doctors,
