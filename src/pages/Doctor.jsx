@@ -29,7 +29,7 @@ const Doctor = () => {
   const handleFilterClick = (item) => {
     if (speciality === item) {
       navigate("/doctors");
-    } else {w
+    } else {
       navigate(`/doctors/${item}`);
     }
     setShowFilter(false); // auto close list on item click
