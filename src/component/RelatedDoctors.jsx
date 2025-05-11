@@ -6,7 +6,6 @@ const RelatedDoctors = ({ docId, speciality }) => {
   const { doctors } = useContext(AppContext);
   const [relDoc, setRelDoc] = useState([]);
   const navigate = useNavigate();
-w
   useEffect(() => {
     if (doctors.length > 0 && speciality) {
       const doctorData = doctors.filter(
