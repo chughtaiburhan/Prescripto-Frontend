@@ -7,23 +7,24 @@ export const AppContext = createContext();
 const AppContextProvider = (props) => {
   const currencySymbol = "$";
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  console.info(`This is backend URL ${backendUrl}`);
 
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState("");
   const [userData, setUserData] = useState(false);
 
-  // 👇 Load token from localStorage on first load
- useEffect(() => {
-  const savedToken = localStorage.getItem("token");
-  if (savedToken) {
-    setToken(savedToken);  // Set the token in the context
-  }
-}, []);
+  // Load token from localStorage on first load
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+      setToken(savedToken); // Set the token in the context
+    }
+  }, []);
 
   const getDoctorsData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/doctors/list`);
+      const { data } = await axios.get(`${backendUrl}/doctors/list`, {
+        headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
+      });
       if (data.success) {
         setDoctors(data.doctors);
       } else {
@@ -36,34 +37,33 @@ const AppContextProvider = (props) => {
   };
 
   const userProfileData = async () => {
-  try {
-    const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
-      headers: { Authorization: `Bearer ${token}` },  // Use Bearer token format
-    });
+    try {
+      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
+        headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
+      });
 
-    if (data.success) {
-      setUserData(data.userData);
-    } else {
-      toast.error(data.message);
+      if (data.success) {
+        setUserData(data.userData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || error.message);
     }
-  } catch (error) {
-    console.error(error);
-    toast.error(error.response?.data?.message || error.message);
-  }
-};
-
+  };
 
   useEffect(() => {
     getDoctorsData();
-  }, []); // ✅ Prevent infinite calls
+  }, [token]); // ✅ Prevent infinite calls and refetch data if token changes
 
- useEffect(() => {
-  if (token) {
-    userProfileData();
-  } else {
-    setUserData(false);
-  }
-}, [token]); 
+  useEffect(() => {
+    if (token) {
+      userProfileData();
+    } else {
+      setUserData(false);
+    }
+  }, [token]);
 
   const value = {
     doctors,

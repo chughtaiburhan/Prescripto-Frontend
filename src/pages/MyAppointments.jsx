@@ -11,9 +11,15 @@ const MyAppointments = () => {
   // Function to fetch user appointments
   const getUserAppointment = async () => {
     try {
+      if (!token) {
+        toast.warn("Please log in to view appointments.");
+        return;
+      }
+
       const { data } = await axios.get(`${backendUrl}/user/appointment`, {
-        headers: { token },
+        headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
       });
+
       if (data.success) {
         setAppointment(data.appointment.reverse()); // Reverse appointments to show latest first
       } else {
@@ -21,7 +27,14 @@ const MyAppointments = () => {
       }
     } catch (error) {
       console.error("Fetch appointment error:", error);
-      toast.error("Something went wrong while fetching appointments.");
+      if (error.response?.status === 401) {
+        toast.warn("Session expired. Please log in again.");
+        // Optional: Clear token and redirect to login page
+        // localStorage.removeItem("token");
+        // navigate("/login");
+      } else {
+        toast.error("Something went wrong while fetching appointments.");
+      }
     } finally {
       setLoading(false);
     }
@@ -30,11 +43,17 @@ const MyAppointments = () => {
   // Function to cancel an appointment
   const cancelAppointment = async (appointmentId) => {
     try {
+      if (!token) {
+        toast.warn("Please log in to cancel appointments.");
+        return;
+      }
+
       const { data } = await axios.post(
         `${backendUrl}/user/cancel-appointment`,
         { appointmentId },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } } // Use Bearer token format
       );
+
       if (data.success) {
         toast.success(data.message);
         getUserAppointment();
@@ -65,7 +84,7 @@ const MyAppointments = () => {
       ) : (
         <div>
           {appointment.slice(0, 2).map((item, index) => {
-           const doc = item?.docId || {}; // ✅ Now it's correct
+            const doc = item?.docId || {}; // Handle null docId gracefully
             const address = doc?.address || {}; // Handle missing address gracefully
             return (
               <div
@@ -84,17 +103,17 @@ const MyAppointments = () => {
                 {/* Appointment Details */}
                 <div className="flex-1 text-sm text-zinc-600">
                   <p className="text-neutral-800 font-semibold">
-                    {doc?.name || "Unknown Doctor"} {/* Fallback to Unknown Doctor */}
+                    {doc?.name || "Unknown Doctor"}
                   </p>
                   <p>{item?.speciality || "Speciality not provided"}</p>
 
                   <p className="text-zinc-700 font-medium mt-1">Address:</p>
-                  <p className="text-xs">{address?.line1 || "N/A"}</p> {/* Handle missing address */}
-                  <p className="text-xs">{address?.line2 || ""}</p> {/* Handle missing line2 */}
+                  <p className="text-xs">{address?.line1 || "N/A"}</p>
+                  <p className="text-xs">{address?.line2 || ""}</p>
 
                   <p className="text-xs mt-1">
                     <span className="text-sm text-neutral-700 font-medium">Date & Time:</span>{" "}
-                    {item?.slotDate || "N/A"} | {item?.slotTime || "N/A"} {/* Handle missing slot data */}
+                    {item?.slotDate || "N/A"} | {item?.slotTime || "N/A"}
                   </p>
                 </div>
 

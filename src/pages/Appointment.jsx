@@ -22,13 +22,7 @@ const Appointment = () => {
     setDocInfo(docInfo);
     console.info(docInfo);
   };
-  const bookAppointment = async () => {
-    console.log("Booking started...");
-    console.log("docSlot:", docSlot);
-    console.log("slotIndex:", slotIndex);
-    console.log("slotTime:", slotTime);
-    console.log("docInfo:", docInfo);
-
+  const bookAppointment = async () => { 
     if (!token) {
       toast.warn("Login to book appointment");
       return navigate("/login");
@@ -60,7 +54,7 @@ const Appointment = () => {
       const { data } = await axios.post(
         `${backendUrl}/user/book-appointment`,
         { docId, slotDate, slotTime },
-        { headers: { token } }
+        { headers:{ Authorization: `Bearer ${token}` } }
       );
 
       if (data.success) {
