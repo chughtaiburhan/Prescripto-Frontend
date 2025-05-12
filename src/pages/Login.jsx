@@ -14,39 +14,45 @@ const Login = () => {
   const [password, setPassword] = useState(""); 
   const navigate=useNavigate()
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      if (state === "Sign Up") {
-        const { data } = await axios.post(`${backendUrl}/user/register`, {
-          name,
-          email,
-          password,
-        });
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-          toast.success("User Register Successfully!")
-        } else {
-          toast.error(data.message);
-        }
+ const onSubmitHandler = async (e) => {
+  e.preventDefault();
+  try {
+    if (state === "Sign Up") {
+      const { data } = await axios.post(`${backendUrl}/user/register`, {
+        name,
+        email,
+        password,
+      });
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        toast.success("User Register Successfully!");
       } else {
-        const { data } = await axios.post(`${backendUrl}/user/login`, {
-          email,
-          password,
-        });
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-          toast.success("User Login Successfully!")
-        } else {
-          toast.error(data.message);
-        }
+        toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message);
+    } else {
+      const { data } = await axios.post(`${backendUrl}/user/login`, {
+        email,
+        password,
+      });
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        toast.success("User Login Successfully!");
+      } else {
+        toast.error(data.message);
+      }
     }
-  };
+  } catch (error) {
+    // Handle 409 (conflict) for already registered emails
+    if (error.response?.status === 409) {
+      toast.error("This email is already registered. Please login.");
+    } else {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  }
+};
+
 
   useEffect(()=>{
 if(token){
