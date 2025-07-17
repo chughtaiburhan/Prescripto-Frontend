@@ -54,7 +54,7 @@ const Login = () => {
           image: profilePicture,
         };
 
-        const response = await axios.post(`${backendUrl}/user/register`, registrationData);
+        const response = await axios.post(`${backendUrl}/api/user/register`, registrationData);
 
         if (response.data.success) {
           toast.success("Registration successful! Please check your email for verification code.");
