@@ -83,7 +83,7 @@ const MyAppointments = () => {
         <p className="mt-6 text-gray-500 text-sm">No appointments found.</p>
       ) : (
         <div>
-          {appointment.slice(0, 2).map((item, index) => {
+          {appointment.map((item, index) => {
             const doc = item?.docId || {}; // Handle null docId gracefully
             const address = doc?.address || {}; // Handle missing address gracefully
             return (
@@ -95,8 +95,11 @@ const MyAppointments = () => {
                 <div>
                   <img
                     className="w-32 h-32 object-cover rounded-md bg-indigo-50"
-                    src={doc?.image || "/default-doctor.jpg"} // Fallback to default image if not available
+                    src={doc?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc?.name || "Doctor")}&background=5f6FFF&color=fff&size=128&rounded=true&bold=true`}
                     alt={`${doc?.name || "Doctor"}-img`}
+                    onError={(e) => {
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(doc?.name || "Doctor")}&background=5f6FFF&color=fff&size=128&rounded=true&bold=true`;
+                    }}
                   />
                 </div>
 
@@ -114,6 +117,10 @@ const MyAppointments = () => {
                   <p className="text-xs mt-1">
                     <span className="text-sm text-neutral-700 font-medium">Date & Time:</span>{" "}
                     {item?.slotDate || "N/A"} | {item?.slotTime || "N/A"}
+                  </p>
+                  {/* Status Label */}
+                  <p className={`mt-2 text-xs font-bold ${item?.cancelled ? 'text-red-500' : 'text-green-600'}`}>
+                    Status: {item?.cancelled ? 'Cancelled' : 'Booked'}
                   </p>
                 </div>
 

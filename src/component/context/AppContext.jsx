@@ -6,44 +6,130 @@ export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
   const currencySymbol = "$";
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api";
 
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState("");
   const [userData, setUserData] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Load token from localStorage on first load
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
+    const userRole = localStorage.getItem("userRole");
+    const savedUserData = localStorage.getItem("userData");
+
     if (savedToken) {
-      setToken(savedToken); // Set the token in the context
+      setToken(savedToken);
+      if (savedUserData) {
+        setUserData(JSON.parse(savedUserData));
+      }
     }
   }, []);
 
-  const getDoctorsData = async () => {
+  // User Registration
+  const userRegister = async (userData) => {
+    setLoading(true);
     try {
-      const { data } = await axios.get(`${backendUrl}/doctors/list`, {
-        headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
-      });
+      console.log("Sending registration data:", userData);
+
+      // Use different API endpoints based on role
+      const apiEndpoint = userData.role === "doctor" ? "admin/register" : "user/register";
+      const { data } = await axios.post(`${backendUrl}/${apiEndpoint}`, userData);
+
       if (data.success) {
-        setDoctors(data.doctors);
+        // Store token and user data for all users (both patients and doctors)
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", userData.role);
+        localStorage.setItem("userData", JSON.stringify(data.userData || data.doctorData));
+        setToken(data.token);
+        setUserData(data.userData || data.doctorData);
+
+        return { success: true, token: data.token, userData: data.userData || data.doctorData };
       } else {
         toast.error(data.message);
+        return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.message);
+      console.error("Registration error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: error.config,
+      });
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(errorMessage);
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
     }
   };
 
-  const userProfileData = async () => {
+  // User Login
+  const userLogin = async (email, password) => {
+    setLoading(true);
     try {
-      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
-        headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
-      });
+      // Try user login first
+      try {
+        const { data } = await axios.post(`${backendUrl}/user/login`, {
+          email,
+          password,
+        });
+        if (data.success) {
+          // Store token and user data for all users (both patients and doctors)
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userRole", data.userData.role);
+          localStorage.setItem("userData", JSON.stringify(data.userData));
+          setUserData(data.userData);
+          return { success: true, token: data.token, userData: data.userData };
+        } else {
+          toast.error(data.message);
+          return { success: false, message: data.message };
+        }
+      } catch (userError) {
+        // If user login fails, try doctor login
+        const { data } = await axios.post(`${backendUrl}/doctor/login`, {
+          email,
+          password,
+        });
+        if (data.success) {
+          // Store token and user data for doctors
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userRole", data.userData.role);
+          localStorage.setItem("userData", JSON.stringify(data.userData));
+          setUserData(data.userData);
+          return { success: true, token: data.token, userData: data.userData };
+        } else {
+          toast.error(data.message);
+          return { success: false, message: data.message };
+        }
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(errorMessage);
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // User Logout
+  const userLogout = () => {
+    setToken("");
+    setUserData(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    toast.success("Logged out successfully!");
+  };
+
+  // Get Doctors List
+  const getDoctorsData = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/doctors/list`);
       if (data.success) {
-        setUserData(data.userData);
+        setDoctors(data.doctors);
       } else {
         toast.error(data.message);
       }
@@ -53,9 +139,100 @@ const AppContextProvider = (props) => {
     }
   };
 
+  // Get User Profile
+  const userProfileData = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        setUserData(data.userData);
+        localStorage.setItem("userData", JSON.stringify(data.userData));
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
+
+  // Book Appointment
+  const bookAppointment = async (appointmentData) => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/user/book-appointment`,
+        appointmentData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (data.success) {
+        toast.success("Appointment booked successfully!");
+        return { success: true };
+      } else {
+        toast.error(data.message);
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(errorMessage);
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get User Appointments
+  const getUserAppointments = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/user/appointment`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (data.success) {
+        return data.appointments;
+      } else {
+        toast.error(data.message);
+        return [];
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+      return [];
+    }
+  };
+
+  // Cancel Appointment
+  const cancelAppointment = async (appointmentId) => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/user/cancel-appointment`,
+        { appointmentId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (data.success) {
+        toast.success("Appointment cancelled successfully!");
+        return { success: true };
+      } else {
+        toast.error(data.message);
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(errorMessage);
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getDoctorsData();
-  }, [token]); // ✅ Prevent infinite calls and refetch data if token changes
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -75,6 +252,13 @@ const AppContextProvider = (props) => {
     userData,
     setUserData,
     userProfileData,
+    userRegister,
+    userLogin,
+    userLogout,
+    bookAppointment,
+    getUserAppointments,
+    cancelAppointment,
+    loading,
   };
 
   return (

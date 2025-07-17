@@ -1,33 +1,69 @@
 import React from "react";
-import { assets } from "../assets/assets_frontend/assets";
+import { Link } from "react-router-dom";
 
 const Contact = () => {
   return (
-    <div>
-      <div className="text-center text-2xl pt-10 text-gray-500">
-        <p className="text-gray-700 font-semibold">
-          CONTACT <span>US</span>
-        </p>
-      </div>
-      <div className="my-10 flex flex-col justify-center md:flex-row gap-10 mb-28 text-sm">
-        <img className="w-full md:max-w-[360px]" src={assets.contact_image} alt="contact-img" />
-        <div className="flex flex-col justify-center items-start gap-6">
-          <p className="font-semibold text-lg text-gray-600">OUR OFFICE</p>
-          <p className="text-gray-500">
-            00000 Willms Station <br /> Suite 000, Washington, USA
-          </p>
-          <p className="text-gray-500">
-            Tel: (000) 000-0000 <br /> Email: greatstackdev@gmail.com
-          </p>
-          <p className="font-semibold text-lg text-gray-600">
-            CAREERS AT PRESCRIPTO
-          </p>
-          <p className="text-gray-500">
-            Learn more about our teams and job openings.
-          </p>
-          <button className="border border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500">
-            Explore Jobs
-          </button>
+    <div className="min-h-screen bg-white py-8">
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">CONTACT US</h1>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* Left Side - Image */}
+          <div className="relative">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img
+                src="/src/assets/assets_frontend/contact_image.png"
+                alt="Medical consultation"
+                className="w-full h-auto object-cover"
+                style={{ minHeight: "400px" }}
+              />
+            </div>
+          </div>
+
+          {/* Right Side - Contact Information */}
+          <div className="space-y-2">
+            {/* Office Information */}
+            <div className="bg-white rounded-lg p-4 ">
+              <h2 className="text-xl font-semibold text-gray-600 mb-6">OUR OFFICE</h2>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-gray-700 font-medium">Address:</p>
+                  <p className="text-gray-600">11C-1 North Karachi</p>
+                  <p className="text-gray-600">Karachi, Sindh, Pakistan</p>
+
+                </div>
+
+                <div>
+                  <p className="text-gray-700 font-medium">Phone:</p>
+                  <p className="text-gray-600">Tel: (+92) 3292198843</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-700 font-medium">Email:</p>
+                  <p className="text-gray-600">Email: chughtaiburhan3@gmail.com</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Careers Section */}
+            <div className="bg-white rounded-lg p-4">
+              <h2 className="text-xl font-semibold text-gray-600 mb-4">DOCTORS AT PRESCRIPTO</h2>
+              <p className="text-gray-600 mb-6">
+                Learn more about our teams and Doctors available.
+              </p>
+              <Link
+                to="/doctors"
+                className="inline-block border border-gray-900 text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-gray-900 hover:text-white transition-colors duration-300"
+              >
+                Explore Doctors
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

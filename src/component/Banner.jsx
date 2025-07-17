@@ -26,7 +26,7 @@ const Banner = () => {
         <img
           src={assets.appointment_img}
           alt="banner-img"
-          className="w-full absolute bottom-0 right-0 max-w-md"
+          className="w-full absolute bottom-0 right-0 max-w-md animate-zoom-inout"
         />
       </div>
     </div>

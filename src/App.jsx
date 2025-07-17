@@ -10,26 +10,41 @@ import MyAppointment from "./pages/MyAppointments";
 import Appointment from "./pages/Appointment";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
+import InteractiveSection from "./component/InteractiveSection";
 import "react-toastify/dist/ReactToastify.css";
-import {ToastContainer} from "react-toastify"
+import { ToastContainer } from "react-toastify"
+import ScrollToTop from "./component/ScrollToTop";
+import EmailVerification from "./component/EmailVerification";
 
 const App = () => {
   return (
     <div className="mx-4 sm:mx-[10%]">
-      <ToastContainer />
-
+      <ScrollToTop />
+      <ToastContainer
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/doctors" element={<Doctor />} />
         <Route path="/doctors/:speciality" element={<Doctor />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/my-appointment" element={<MyAppointment />} />
         <Route path="/appointment/:docId" element={<Appointment />} />
+        <Route path="/email-verify" element={<EmailVerification />} />
       </Routes>
+      <InteractiveSection />
       <Footer />
     </div>
   );

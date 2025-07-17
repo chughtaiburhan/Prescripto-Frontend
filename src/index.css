@@ -10,6 +10,7 @@ body {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  cursor: auto;
 }
 
 .active hr {
@@ -20,8 +21,84 @@ body {
   @apply hidden;
 }
 
-@media (max-width:740px){
-  .active p{
-    @apply text-white bg-[#5f6FFF]
+button {
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67),
+    box-shadow 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  box-shadow: 0 2px 8px rgba(95, 111, 255, 0.08),
+    0 1.5px 4px rgba(0, 0, 0, 0.04);
+  will-change: transform;
+}
+button:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 2px rgba(95, 111, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
+  filter: none;
+}
+button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(95, 111, 255, 0.18), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes floatFast {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-35px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+.animate-float-fast {
+  animation: floatFast 5s ease-in-out infinite;
+}
+
+@keyframes zoomInOut {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-zoom-inout {
+  animation: zoomInOut 5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@media (max-width: 740px) {
+  .active p {
+    @apply text-white bg-[#5f6FFF];
   }
 }
