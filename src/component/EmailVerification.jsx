@@ -18,6 +18,21 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
         }
     }, [email, location.state]);
 
+    // Call verify-email API on mount (to trigger resend or check status)
+    useEffect(() => {
+        if (!email) return;
+        const sendVerification = async () => {
+            try {
+                await axios.post(`${backendUrl}/api/user/verify-email`, { email });
+                toast.success("Verification code sent to your email.");
+            } catch (error) {
+                toast.error(error.response?.data?.error || error.response?.data?.message || "Failed to send verification code");
+            }
+        };
+        sendVerification();
+        // Only run on mount or when email changes
+    }, [email, backendUrl]);
+
     const verifyCode = async () => {
         if (!verificationCode) {
             toast.error("Please enter the verification code");
