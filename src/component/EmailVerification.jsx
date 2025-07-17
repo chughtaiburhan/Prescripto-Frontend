@@ -33,7 +33,7 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
         try {
             console.log("Sending verification request:", { email, code: verificationCode });
 
-            const { data } = await axios.post(`${backendUrl}/user/verify-email`, {
+            const { data } = await axios.post(`${backendUrl}/api/user/verify-email`, {
                 email: email,
                 code: verificationCode
             });
