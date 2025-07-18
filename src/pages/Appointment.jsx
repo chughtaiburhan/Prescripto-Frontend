@@ -57,7 +57,7 @@ const Appointment = () => {
 
       // Determine the correct API endpoint based on user role
       const userRole = userData?.role || localStorage.getItem("userRole");
-      const apiEndpoint = userRole === "doctor" ? "doctor/book-appointment" : "user/book-appointment";
+      const apiEndpoint = userRole === "doctor" ? "api/doctor/book-appointment" : "api/user/book-appointment";
 
       console.log("Booking appointment with:", {
         docId,
