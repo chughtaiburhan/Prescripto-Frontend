@@ -20,6 +20,13 @@ const Navbar = () => {
     setToken(false);
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
+    localStorage.removeItem("userData");
+
+    // Also clear admin panel credentials if they exist
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminRole");
+    localStorage.removeItem("adminUserData");
+
     toast.success("User Logout Successfully!");
     navigate("/");
   };

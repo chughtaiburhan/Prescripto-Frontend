@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Doctor from "./pages/Doctor";
@@ -17,6 +17,17 @@ import ScrollToTop from "./component/ScrollToTop";
 import EmailVerification from "./component/EmailVerification";
 
 const App = () => {
+  // Check if logged-in user is a doctor and redirect to admin panel
+  useEffect(() => {
+    const userRole = localStorage.getItem("userRole");
+    const token = localStorage.getItem("token");
+
+    if (token && userRole === "doctor") {
+      // Redirect doctors to admin panel
+      window.location.href = "http://localhost:5174";
+    }
+  }, []);
+
   return (
     <div className="mx-4 sm:mx-[10%]">
       <ScrollToTop />

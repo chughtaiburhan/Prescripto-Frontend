@@ -73,8 +73,15 @@ const Login = () => {
         const result = await userLogin(email, password);
         if (result.success) {
           localStorage.setItem("token", result.token);
-          toast.success("Login successful!");
-          navigate("/");
+
+          // Check if user is being redirected to admin panel
+          if (result.redirectToAdmin) {
+            // Don't show success toast for doctors as they're being redirected
+            // The redirect is handled in the userLogin function
+          } else {
+            toast.success("Login successful!");
+            navigate("/");
+          }
         } else {
           toast.error(result.message);
         }

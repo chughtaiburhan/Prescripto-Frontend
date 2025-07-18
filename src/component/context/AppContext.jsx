@@ -82,6 +82,19 @@ const AppContextProvider = (props) => {
           localStorage.setItem("userRole", data.userData.role);
           localStorage.setItem("userData", JSON.stringify(data.userData));
           setUserData(data.userData);
+
+          // Check if user is a doctor and redirect to admin panel
+          if (data.userData.role === "doctor") {
+            // Store admin panel credentials
+            localStorage.setItem("adminToken", data.token);
+            localStorage.setItem("adminRole", "doctor");
+            localStorage.setItem("adminUserData", JSON.stringify(data.userData));
+
+            // Redirect to admin panel
+            window.location.href = "http://localhost:5174"; // Admin panel URL
+            return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
+          }
+
           return { success: true, token: data.token, userData: data.userData };
         } else {
           toast.error(data.message);
@@ -100,7 +113,14 @@ const AppContextProvider = (props) => {
           localStorage.setItem("userRole", data.userData.role);
           localStorage.setItem("userData", JSON.stringify(data.userData));
           setUserData(data.userData);
-          return { success: true, token: data.token, userData: data.userData };
+
+          // Redirect doctors to admin panel
+          localStorage.setItem("adminToken", data.token);
+          localStorage.setItem("adminRole", "doctor");
+          localStorage.setItem("adminUserData", JSON.stringify(data.userData));
+
+          window.location.href = "http://localhost:5174"; // Admin panel URL
+          return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
         } else {
           toast.error(data.message);
           return { success: false, message: data.message };
