@@ -16,7 +16,7 @@ const MyAppointments = () => {
         return;
       }
 
-      const { data } = await axios.get(`${backendUrl}/user/appointment`, {
+      const { data } = await axios.get(`${backendUrl}/api/user/appointment`, {
         headers: { Authorization: `Bearer ${token}` }, // Use Bearer token format
       });
 
@@ -49,7 +49,7 @@ const MyAppointments = () => {
       }
 
       const { data } = await axios.post(
-        `${backendUrl}/user/cancel-appointment`,
+        `${backendUrl}/api/user/cancel-appointment`,
         { appointmentId },
         { headers: { Authorization: `Bearer ${token}` } } // Use Bearer token format
       );

@@ -131,6 +131,7 @@ const Login = () => {
         email: forgotEmail,
         code: resetCode,
         newPassword: resetNewPassword,
+        action: "verify",
       });
       if (res.data.message) {
         toast.success("Password reset successfully! You can now login.");
