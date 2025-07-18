@@ -73,16 +73,22 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
 
             if (data.message) {
                 toast.success("Email verified successfully!");
-                
+
                 // Check if the verified user is a doctor and redirect accordingly
                 if (data.user && data.user.role === "doctor") {
                     // Store admin panel credentials for doctors
                     localStorage.setItem("adminToken", data.token);
                     localStorage.setItem("adminRole", "doctor");
                     localStorage.setItem("adminUserData", JSON.stringify(data.user));
-                    
+
                     // Redirect doctors to admin panel
-                    window.location.href = "http://localhost:5174";
+                    const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+                    if (!adminPanelUrl) {
+                        console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+                        toast.error("Admin panel URL not configured. Please contact administrator.");
+                        return;
+                    }
+                    window.location.href = adminPanelUrl;
                 } else if (onVerificationComplete) {
                     onVerificationComplete(code);
                 } else {

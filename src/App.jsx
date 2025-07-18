@@ -24,7 +24,12 @@ const App = () => {
 
     if (token && userRole === "doctor") {
       // Redirect doctors to admin panel
-      window.location.href = "http://localhost:5174";
+      const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+      if (!adminPanelUrl) {
+        console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+        return;
+      }
+      window.location.href = adminPanelUrl;
     }
   }, []);
 

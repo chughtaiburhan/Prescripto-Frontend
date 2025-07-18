@@ -79,8 +79,8 @@ const Login = () => {
             // Don't show success toast for doctors as they're being redirected
             // The redirect is handled in the userLogin function
           } else {
-            toast.success("Login successful!");
-            navigate("/");
+          toast.success("Login successful!");
+          navigate("/");
           }
         } else {
           toast.error(result.message);

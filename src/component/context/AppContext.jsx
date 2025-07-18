@@ -91,7 +91,13 @@ const AppContextProvider = (props) => {
             localStorage.setItem("adminUserData", JSON.stringify(data.userData));
 
             // Redirect to admin panel
-            window.location.href = "http://localhost:5174"; // Admin panel URL
+            const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+            if (!adminPanelUrl) {
+              console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+              toast.error("Admin panel URL not configured. Please contact administrator.");
+              return { success: false, message: "Admin panel URL not configured" };
+            }
+            window.location.href = adminPanelUrl;
             return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
           }
 
@@ -119,7 +125,13 @@ const AppContextProvider = (props) => {
           localStorage.setItem("adminRole", "doctor");
           localStorage.setItem("adminUserData", JSON.stringify(data.userData));
 
-          window.location.href = "http://localhost:5174"; // Admin panel URL
+          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+          if (!adminPanelUrl) {
+            console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+            toast.error("Admin panel URL not configured. Please contact administrator.");
+            return { success: false, message: "Admin panel URL not configured" };
+          }
+          window.location.href = adminPanelUrl;
           return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
         } else {
           toast.error(data.message);
