@@ -28,6 +28,33 @@ const Login = () => {
   const [resetCode, setResetCode] = useState("");
   const [resetNewPassword, setResetNewPassword] = useState("");
 
+  // Password strength state
+  const [passwordStrength, setPasswordStrength] = useState({
+    hasMinLength: false,
+    hasLowercase: false,
+    hasNumber: false,
+    hasUppercase: false,
+    hasSpecialChar: false
+  });
+
+  // Password strength checker
+  const checkPasswordStrength = (password) => {
+    setPasswordStrength({
+      hasMinLength: password.length >= 6,
+      hasLowercase: /[a-z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasUppercase: /[A-Z]/.test(password),
+      hasSpecialChar: /[@$!%*?&]/.test(password)
+    });
+  };
+
+  // Handle password change
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    checkPasswordStrength(newPassword);
+  };
+
   // Update state when route changes
   useEffect(() => {
     setState(location.pathname === "/signup" ? "Sign Up" : "Login");
@@ -283,12 +310,71 @@ const Login = () => {
                   <input
                     className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
                     type="password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     value={password}
                     placeholder="Enter your password"
                     required
                     autoComplete="new-password"
                   />
+                  {/* Password Strength Indicator */}
+                  {state === "Sign Up" && (
+                    <div className="mt-2 space-y-1">
+                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasMinLength ? 'text-green-600' : 'text-gray-500'}`}>
+                        <svg className={`w-4 h-4 ${passwordStrength.hasMinLength ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
+                          {passwordStrength.hasMinLength ? (
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          ) : (
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          )}
+                        </svg>
+                        <span>At least 6 characters</span>
+                      </div>
+
+                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasLowercase ? 'text-green-600' : 'text-gray-500'}`}>
+                        <svg className={`w-4 h-4 ${passwordStrength.hasLowercase ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
+                          {passwordStrength.hasLowercase ? (
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          ) : (
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          )}
+                        </svg>
+                        <span>Lowercase letter (a-z)</span>
+                      </div>
+
+                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasNumber ? 'text-green-600' : 'text-gray-500'}`}>
+                        <svg className={`w-4 h-4 ${passwordStrength.hasNumber ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
+                          {passwordStrength.hasNumber ? (
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          ) : (
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          )}
+                        </svg>
+                        <span>Number (0-9)</span>
+                      </div>
+
+                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasUppercase ? 'text-green-600' : 'text-gray-500'}`}>
+                        <svg className={`w-4 h-4 ${passwordStrength.hasUppercase ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
+                          {passwordStrength.hasUppercase ? (
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          ) : (
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          )}
+                        </svg>
+                        <span>Uppercase letter (A-Z)</span>
+                      </div>
+
+                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasSpecialChar ? 'text-green-600' : 'text-gray-500'}`}>
+                        <svg className={`w-4 h-4 ${passwordStrength.hasSpecialChar ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
+                          {passwordStrength.hasSpecialChar ? (
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                          ) : (
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          )}
+                        </svg>
+                        <span>Special character (@$!%*?&)</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
