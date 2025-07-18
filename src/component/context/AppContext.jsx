@@ -71,7 +71,7 @@ const AppContextProvider = (props) => {
     try {
       // Try user login first
       try {
-        const { data } = await axios.post(`${backendUrl}/user/login`, {
+        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
           email,
           password,
         });
@@ -89,7 +89,7 @@ const AppContextProvider = (props) => {
         }
       } catch (userError) {
         // If user login fails, try doctor login
-        const { data } = await axios.post(`${backendUrl}/doctor/login`, {
+        const { data } = await axios.post(`${backendUrl}/api/doctor/login`, {
           email,
           password,
         });
@@ -139,31 +139,26 @@ const AppContextProvider = (props) => {
     }
   };
 
-  // Get User Profile
+  // Get User Profile Data
   const userProfileData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/user/get-profile`, {
+      const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (data.success) {
         setUserData(data.userData);
         localStorage.setItem("userData", JSON.stringify(data.userData));
-      } else {
-        toast.error(data.message);
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || error.message);
+      console.error("Error fetching user profile:", error);
     }
   };
 
   // Book Appointment
   const bookAppointment = async (appointmentData) => {
-    setLoading(true);
     try {
       const { data } = await axios.post(
-        `${backendUrl}/user/book-appointment`,
+        `${backendUrl}/api/user/book-appointment`,
         appointmentData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -171,44 +166,40 @@ const AppContextProvider = (props) => {
       );
       if (data.success) {
         toast.success("Appointment booked successfully!");
-        return { success: true };
+        return { success: true, data: data.appointment };
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to book appointment");
         return { success: false, message: data.message };
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       toast.error(errorMessage);
       return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
     }
   };
 
   // Get User Appointments
   const getUserAppointments = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/user/appointment`, {
+      const { data } = await axios.get(`${backendUrl}/api/user/appointment`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (data.success) {
-        return data.appointments;
+        return { success: true, appointments: data.appointments };
       } else {
-        toast.error(data.message);
-        return [];
+        return { success: false, message: data.message };
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
-      return [];
+      const errorMessage = error.response?.data?.message || error.message;
+      return { success: false, message: errorMessage };
     }
   };
 
   // Cancel Appointment
   const cancelAppointment = async (appointmentId) => {
-    setLoading(true);
     try {
       const { data } = await axios.post(
-        `${backendUrl}/user/cancel-appointment`,
+        `${backendUrl}/api/user/cancel-appointment`,
         { appointmentId },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -218,15 +209,13 @@ const AppContextProvider = (props) => {
         toast.success("Appointment cancelled successfully!");
         return { success: true };
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to cancel appointment");
         return { success: false, message: data.message };
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       toast.error(errorMessage);
       return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
     }
   };
 
