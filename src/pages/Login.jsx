@@ -33,8 +33,7 @@ const Login = () => {
     hasMinLength: false,
     hasLowercase: false,
     hasNumber: false,
-    hasUppercase: false,
-    hasSpecialChar: false
+    hasUppercase: false
   });
 
   // Password strength checker
@@ -43,8 +42,7 @@ const Login = () => {
       hasMinLength: password.length >= 6,
       hasLowercase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
-      hasUppercase: /[A-Z]/.test(password),
-      hasSpecialChar: /[@$!%*?&]/.test(password)
+      hasUppercase: /[A-Z]/.test(password)
     });
   };
 
@@ -318,7 +316,7 @@ const Login = () => {
                   />
                   {/* Password Strength Indicator */}
                   {state === "Sign Up" && (
-                    <div className="mt-2 space-y-1">
+                    <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
                       <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasMinLength ? 'text-green-600' : 'text-gray-500'}`}>
                         <svg className={`w-4 h-4 ${passwordStrength.hasMinLength ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
                           {passwordStrength.hasMinLength ? (
@@ -361,17 +359,6 @@ const Login = () => {
                           )}
                         </svg>
                         <span>Uppercase letter (A-Z)</span>
-                      </div>
-
-                      <div className={`flex items-center gap-2 text-xs ${passwordStrength.hasSpecialChar ? 'text-green-600' : 'text-gray-500'}`}>
-                        <svg className={`w-4 h-4 ${passwordStrength.hasSpecialChar ? 'text-green-600' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 24 24">
-                          {passwordStrength.hasSpecialChar ? (
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                          ) : (
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          )}
-                        </svg>
-                        <span>Special character (@$!%*?&)</span>
                       </div>
                     </div>
                   )}
