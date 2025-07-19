@@ -7,7 +7,7 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
     const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState(propEmail);
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api";
+    const backendUrl = "https://prescripto-backend-nextjs.vercel.app/api";
     const location = useLocation();
     const navigate = useNavigate();
 
