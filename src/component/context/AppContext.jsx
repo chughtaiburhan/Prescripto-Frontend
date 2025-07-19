@@ -6,7 +6,7 @@ export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
   const currencySymbol = "$";
-  const backendUrl = "https://prescripto-backend-nextjs.vercel.app/api";
+  const backendUrl = "https://prescripto-backend-beta-nine.vercel.app";
 
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState("");
