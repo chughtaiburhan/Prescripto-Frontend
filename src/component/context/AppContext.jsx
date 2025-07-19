@@ -91,9 +91,9 @@ const AppContextProvider = (props) => {
             localStorage.setItem("adminUserData", JSON.stringify(data.userData));
 
             // Redirect to admin panel
-            const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+            const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL;
             if (!adminPanelUrl) {
-              console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+              console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL environment variable.");
               toast.error("Admin panel URL not configured. Please contact administrator.");
               return { success: false, message: "Admin panel URL not configured" };
             }
@@ -125,9 +125,9 @@ const AppContextProvider = (props) => {
           localStorage.setItem("adminRole", "doctor");
           localStorage.setItem("adminUserData", JSON.stringify(data.userData));
 
-          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL;
           if (!adminPanelUrl) {
-            console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+            console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL environment variable.");
             toast.error("Admin panel URL not configured. Please contact administrator.");
             return { success: false, message: "Admin panel URL not configured" };
           }

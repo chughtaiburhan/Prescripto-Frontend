@@ -24,9 +24,9 @@ const App = () => {
 
     if (token && userRole === "doctor") {
       // Redirect doctors to admin panel
-      const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL_URL;
+      const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL;
       if (!adminPanelUrl) {
-        console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL_URL environment variable.");
+        console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL environment variable.");
         return;
       }
       window.location.href = adminPanelUrl;
