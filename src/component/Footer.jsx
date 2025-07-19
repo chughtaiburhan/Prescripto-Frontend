@@ -9,9 +9,7 @@ const Footer = () => {
         <div>
           <img className="mb-5 w-40" src={assets.logo} alt="logo" />
           <p className="w-full md:w-2/3 text-gray-600 leading-6">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor
-            expedita deserunt laboriosam enim maxime voluptate tenetur ratione
-            quod quos quae?
+            Prescripto is your trusted healthcare companion, connecting you with qualified doctors and specialists for convenient online consultations. Book appointments, get prescriptions, and access quality healthcare from the comfort of your home.
           </p>
         </div>
 
@@ -30,8 +28,8 @@ const Footer = () => {
         <div>
           <p className="text-xl font-medium mb-5 ">GET IN TOUCH</p>
           <ul className="flex flex-col gap-2 text-gray-600">
-            <li>+0-000-000-000</li>
-            <li>greatstackdev@gmail.com</li>
+            <li>+923292198843</li>
+            <li>chughtaiburhan3@gmail.com</li>
           </ul>
         </div>
       </div>
