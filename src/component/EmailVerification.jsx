@@ -74,17 +74,7 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
             if (data.message) {
                 toast.success("Email verified successfully!");
 
-                // Check if the verified user is a doctor and redirect accordingly
-                if (data.user && data.user.role === "doctor") {
-                    // Store admin panel credentials for doctors
-                    localStorage.setItem("adminToken", data.token);
-                    localStorage.setItem("adminRole", "doctor");
-                    localStorage.setItem("adminUserData", JSON.stringify(data.user));
-
-                    // Redirect doctors to admin panel
-                    const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
-                    window.location.href = adminPanelUrl;
-                } else if (onVerificationComplete) {
+                if (onVerificationComplete) {
                     onVerificationComplete(code);
                 } else {
                     // Redirect to login if no callback provided

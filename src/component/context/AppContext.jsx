@@ -16,7 +16,6 @@ const AppContextProvider = (props) => {
   // Load token from localStorage on first load
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    const userRole = localStorage.getItem("userRole");
     const savedUserData = localStorage.getItem("userData");
 
     if (savedToken) {
@@ -33,19 +32,18 @@ const AppContextProvider = (props) => {
     try {
       console.log("Sending registration data:", userData);
 
-      // Use different API endpoints based on role
-      const apiEndpoint = userData.role === "doctor" ? "admin/register" : "user/register";
-      const { data } = await axios.post(`${backendUrl}/${apiEndpoint}`, userData);
+      // Use user registration API
+      const { data } = await axios.post(`${backendUrl}/api/user/register`, userData);
 
       if (data.success) {
-        // Store token and user data for all users (both patients and doctors)
+        // Store token and user data
         localStorage.setItem("token", data.token);
         localStorage.setItem("userRole", userData.role);
-        localStorage.setItem("userData", JSON.stringify(data.userData || data.doctorData));
+        localStorage.setItem("userData", JSON.stringify(data.userData));
         setToken(data.token);
-        setUserData(data.userData || data.doctorData);
+        setUserData(data.userData);
 
-        return { success: true, token: data.token, userData: data.userData || data.doctorData };
+        return { success: true, token: data.token, userData: data.userData };
       } else {
         toast.error(data.message);
         return { success: false, message: data.message };
@@ -69,64 +67,22 @@ const AppContextProvider = (props) => {
   const userLogin = async (email, password) => {
     setLoading(true);
     try {
-      // Try user login first
-      try {
-        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
-          email,
-          password,
-        });
-        if (data.success) {
-          // Store token and user data for all users (both patients and doctors)
-          setToken(data.token);
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("userRole", data.userData.role);
-          localStorage.setItem("userData", JSON.stringify(data.userData));
-          setUserData(data.userData);
+      const { data } = await axios.post(`${backendUrl}/api/user/login`, {
+        email,
+        password,
+      });
+      if (data.success) {
+        // Store token and user data
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", data.userData.role);
+        localStorage.setItem("userData", JSON.stringify(data.userData));
+        setUserData(data.userData);
 
-          // Check if user is a doctor and redirect to admin panel
-          if (data.userData.role === "doctor") {
-            // Store admin panel credentials
-            localStorage.setItem("adminToken", data.token);
-            localStorage.setItem("adminRole", "doctor");
-            localStorage.setItem("adminUserData", JSON.stringify(data.userData));
-
-            // Redirect to admin panel
-            const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
-            window.location.href = adminPanelUrl;
-            return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
-          }
-
-          return { success: true, token: data.token, userData: data.userData };
-        } else {
-          toast.error(data.message);
-          return { success: false, message: data.message };
-        }
-      } catch (userError) {
-        // If user login fails, try doctor login
-        const { data } = await axios.post(`${backendUrl}/api/doctor/login`, {
-          email,
-          password,
-        });
-        if (data.success) {
-          // Store token and user data for doctors
-          setToken(data.token);
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("userRole", data.userData.role);
-          localStorage.setItem("userData", JSON.stringify(data.userData));
-          setUserData(data.userData);
-
-          // Redirect doctors to admin panel
-          localStorage.setItem("adminToken", data.token);
-          localStorage.setItem("adminRole", "doctor");
-          localStorage.setItem("adminUserData", JSON.stringify(data.userData));
-
-          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
-          window.location.href = adminPanelUrl;
-          return { success: true, token: data.token, userData: data.userData, redirectToAdmin: true };
-        } else {
-          toast.error(data.message);
-          return { success: false, message: data.message };
-        }
+        return { success: true, token: data.token, userData: data.userData };
+      } else {
+        toast.error(data.message);
+        return { success: false, message: data.message };
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;

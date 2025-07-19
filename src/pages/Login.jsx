@@ -12,7 +12,7 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("patient");
+  const [role] = useState("patient");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState({ line1: "", line2: "" });
   const [gender, setGender] = useState("");
@@ -38,16 +38,7 @@ const Login = () => {
 
     try {
       if (state === "Sign Up") {
-        // Check if user selected doctor role
-        if (role === "doctor") {
-          // For doctors, redirect directly to admin panel login
-          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
-          toast.success("Please login to the admin panel to complete your registration.");
-          window.location.href = `${adminPanelUrl}/login`;
-          return;
-        }
-
-        // For patients, proceed with normal registration
+        // Proceed with normal registration
         const registrationData = {
           name,
           email,
@@ -82,15 +73,8 @@ const Login = () => {
         const result = await userLogin(email, password);
         if (result.success) {
           localStorage.setItem("token", result.token);
-
-          // Check if user is being redirected to admin panel
-          if (result.redirectToAdmin) {
-            // Don't show success toast for doctors as they're being redirected
-            // The redirect is handled in the userLogin function
-          } else {
-            toast.success("Login successful!");
-            navigate("/");
-          }
+          toast.success("Login successful!");
+          navigate("/");
         } else {
           toast.error(result.message);
         }
@@ -187,7 +171,6 @@ const Login = () => {
     setName("");
     setEmail("");
     setPassword("");
-    setRole("patient");
     setPhone("");
     setAddress({ line1: "", line2: "" });
     setGender("");
@@ -218,40 +201,6 @@ const Login = () => {
 
           {state === "Sign Up" && (
             <>
-              {/* Role Selector - Full width */}
-              <div className="w-full">
-                <p className="font-medium flex items-center gap-2">
-                  <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                  Select Role *
-                </p>
-                <select
-                  className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF] bg-white"
-                  onChange={(e) => setRole(e.target.value)}
-                  value={role}
-                  required
-                >
-                  <option value="patient">👤 Patient - Book appointments</option>
-                  <option value="doctor">👨‍⚕️ Doctor - Access admin panel</option>
-                </select>
-
-                {role === "doctor" && (
-                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
-                    <p className="text-xs text-blue-700 font-medium">
-                      Note: Doctors can access both the website and admin panel
-                    </p>
-                  </div>
-                )}
-
-                {role === "patient" && (
-                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
-                    <p className="text-xs text-blue-700 font-medium">
-                      Patients can book appointments and access the website
-                    </p>
-                  </div>
-                )}
-              </div>
 
               {/* Name - Full width */}
               <div className="w-full">
@@ -309,118 +258,116 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Show additional fields only for patients - 2 columns layout */}
-              {role === "patient" && (
-                <>
-                  {/* Phone and Gender - 2 columns */}
-                  <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <p className="font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                        </svg>
-                        Phone Number *
-                      </p>
-                      <input
-                        className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
-                        type="tel"
-                        onChange={(e) => setPhone(e.target.value)}
-                        value={phone}
-                        placeholder="Enter your phone number"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <p className="font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                        Gender *
-                      </p>
-                      <select
-                        className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF] bg-white"
-                        onChange={(e) => setGender(e.target.value)}
-                        value={gender}
-                        required
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Birthday and Profile Picture - 2 columns */}
-                  <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <p className="font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                        </svg>
-                        Date of Birth *
-                      </p>
-                      <input
-                        className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
-                        type="date"
-                        onChange={(e) => setBirthday(e.target.value)}
-                        value={birthday}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <p className="font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                        Profile Picture
-                      </p>
-                      <input
-                        className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Address fields - Full width */}
-                  <div className="w-full">
+              {/* Additional fields - 2 columns layout */}
+              <>
+                {/* Phone and Gender - 2 columns */}
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
                     <p className="font-medium flex items-center gap-2">
                       <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                       </svg>
-                      Address Line 1 *
+                      Phone Number *
                     </p>
                     <input
                       className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
-                      type="text"
-                      onChange={(e) => setAddress({ ...address, line1: e.target.value })}
-                      value={address.line1}
-                      placeholder="Enter your address"
+                      type="tel"
+                      onChange={(e) => setPhone(e.target.value)}
+                      value={phone}
+                      placeholder="Enter your phone number"
                       required
                     />
                   </div>
 
-                  <div className="w-full">
+                  <div>
                     <p className="font-medium flex items-center gap-2">
                       <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                       </svg>
-                      Address Line 2
+                      Gender *
+                    </p>
+                    <select
+                      className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF] bg-white"
+                      onChange={(e) => setGender(e.target.value)}
+                      value={gender}
+                      required
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Birthday and Profile Picture - 2 columns */}
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                      </svg>
+                      Date of Birth *
                     </p>
                     <input
                       className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
-                      type="text"
-                      onChange={(e) => setAddress({ ...address, line2: e.target.value })}
-                      value={address.line2}
-                      placeholder="Apartment, suite, etc. (optional)"
+                      type="date"
+                      onChange={(e) => setBirthday(e.target.value)}
+                      value={birthday}
+                      required
                     />
                   </div>
-                </>
-              )}
+
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                      </svg>
+                      Profile Picture
+                    </p>
+                    <input
+                      className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+                </div>
+
+                {/* Address fields - Full width */}
+                <div className="w-full">
+                  <p className="font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    Address Line 1 *
+                  </p>
+                  <input
+                    className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
+                    type="text"
+                    onChange={(e) => setAddress({ ...address, line1: e.target.value })}
+                    value={address.line1}
+                    placeholder="Enter your address"
+                    required
+                  />
+                </div>
+
+                <div className="w-full">
+                  <p className="font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#5f6FFF]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    Address Line 2
+                  </p>
+                  <input
+                    className="border border-zinc-300 rounded w-full p-2 mt-1 focus:outline-none focus:border-[#5f6FFF]"
+                    type="text"
+                    onChange={(e) => setAddress({ ...address, line2: e.target.value })}
+                    value={address.line2}
+                    placeholder="Apartment, suite, etc. (optional)"
+                  />
+                </div>
+              </>
 
 
 

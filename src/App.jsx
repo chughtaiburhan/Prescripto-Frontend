@@ -17,18 +17,6 @@ import ScrollToTop from "./component/ScrollToTop";
 import EmailVerification from "./component/EmailVerification";
 
 const App = () => {
-  // Check if logged-in user is a doctor and redirect to admin panel
-  useEffect(() => {
-    const userRole = localStorage.getItem("userRole");
-    const token = localStorage.getItem("token");
-
-    if (token && userRole === "doctor") {
-      // Redirect doctors to admin panel
-      const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
-      window.location.href = adminPanelUrl;
-    }
-  }, []);
-
   return (
     <div className="mx-4 sm:mx-[10%]">
       <ScrollToTop />
