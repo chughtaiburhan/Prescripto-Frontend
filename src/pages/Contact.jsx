@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import { assets } from "../assets/assets_frontend/assets";
 const Contact = () => {
   return (
     <div className="min-h-screen bg-white py-8">
@@ -16,7 +16,7 @@ const Contact = () => {
           <div className="relative">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <img
-                src="/src/assets/assets_frontend/contact_image.png"
+                src={assets.contact_image}
                 alt="Medical consultation"
                 className="w-full h-auto object-cover"
                 style={{ minHeight: "400px" }}
@@ -58,7 +58,7 @@ const Contact = () => {
               </p>
               <Link
                 to="/doctors"
-                className="inline-block border border-gray-900 text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-gray-900 hover:text-white transition-colors duration-300"
+                className="inline-block border border text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-[#5f6FFF] hover:text-white transition-colors duration-300"
               >
                 Explore Doctors
               </Link>

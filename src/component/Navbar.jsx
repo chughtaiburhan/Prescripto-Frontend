@@ -35,12 +35,12 @@ const Navbar = () => {
   const userRole = localStorage.getItem("userRole") || "Not logged in";
 
   return (
-    <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
+    <div className="flex items-center justify-between text-sm py-3 sm:py-4 mb-3 sm:mb-5 border-b border-b-gray-400 px-4 sm:px-6">
       <img
         onClick={() => navigate("/")}
         src={assets.logo}
         alt="logo"
-        className="w-44 cursor-pointer "
+        className="w-32 sm:w-40 md:w-44 cursor-pointer"
       />
       <ul className="hidden md:flex items-start gap-5 font-medium">
         {navItems.map((item, index) => (
@@ -128,62 +128,61 @@ const Navbar = () => {
           </div>
         )}
         <img
-          className="w-6 md:hidden"
+          className="w-5 sm:w-6 md:hidden cursor-pointer"
           onClick={() => setShowMenu(true)}
           src={assets.menu_icon}
-          alt=""
+          alt="menu"
         />
         {/* --------- Mobile Menu --------- */}
         <div
-          className={` ${showMenu ? "fixed w-full" : "h-0 w-0"
-            } md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}
+          className={` ${showMenu ? "fixed w-full h-full" : "h-0 w-0"
+            } md:hidden right-0 top-0 bottom-0 z-50 overflow-hidden bg-white transition-all duration-300`}
         >
-          <div className="flex items-center justify-between px-5 py-6">
-            <img className="w-36" src={assets.logo} alt="logo" />
+          <div className="flex items-center justify-between px-4 sm:px-5 py-4 sm:py-6 border-b border-gray-200">
+            <img className="w-28 sm:w-36" src={assets.logo} alt="logo" />
             <img
-              className="w-7"
+              className="w-6 sm:w-7 cursor-pointer"
               onClick={() => setShowMenu(false)}
               src={assets.cross_icon}
-              alt=""
+              alt="close"
             />
           </div>
-          <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium">
+          <ul className="flex flex-col items-center gap-3 sm:gap-4 mt-6 sm:mt-8 px-4 sm:px-5 text-base sm:text-lg font-medium">
             {navItems.map((item, index) => (
-              <li className="py-1" key={index}>
+              <li className="w-full" key={index}>
                 <NavLink
                   onClick={() => setShowMenu(false)}
                   to={item.path}
                   className={({ isActive }) =>
                     isActive
-                      ? "active px-4 py-2 rounded inline-block"
-                      : "px-4 py-2 rounded inline-block"
+                      ? "block w-full text-center px-4 py-3 rounded-lg bg-[#5f6FFF] text-white font-medium"
+                      : "block w-full text-center px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
                   }
                 >
-                  <p className="px-4 py-2 rounded inline-block">{item.label}</p>
-                  <hr className="border-none outline-none h-0.5 bg-[#5f6FFF] w-5/5 m-auto hidden" />
+                  {item.label}
                 </NavLink>
               </li>
             ))}
             {!token && (
               <>
-                <li className="py-1">
+                <li className="w-full mt-2">
                   <button
                     onClick={() => {
                       navigate("/login");
                       setShowMenu(false);
                     }}
-                    className="text-[#5f6FFF] border border-[#5f6FFF] cursor-pointer px-6 py-2 rounded-full font-medium hover:bg-[#5f6FFF] hover:text-white transition-colors"
+                    className="w-full text-[#5f6FFF] border border-[#5f6FFF] cursor-pointer px-6 py-3 rounded-full font-medium hover:bg-[#5f6FFF] hover:text-white transition-colors"
                   >
                     Login
                   </button>
                 </li>
-                <li className="py-1">
+                <li className="w-full">
                   <button
                     onClick={() => {
                       navigate("/signup");
                       setShowMenu(false);
                     }}
-                    className="bg-[#5f6FFF] cursor-pointer text-white px-6 py-2 rounded-full font-medium hover:bg-[#4a5aee] transition-colors"
+                    className="w-full bg-[#5f6FFF] cursor-pointer text-white px-6 py-3 rounded-full font-medium hover:bg-[#4a5aee] transition-colors"
                   >
                     Sign Up
                   </button>
