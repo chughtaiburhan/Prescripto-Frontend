@@ -82,12 +82,7 @@ const EmailVerification = ({ email: propEmail, onVerificationComplete }) => {
                     localStorage.setItem("adminUserData", JSON.stringify(data.user));
 
                     // Redirect doctors to admin panel
-                    const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL;
-                    if (!adminPanelUrl) {
-                        console.error("Admin panel URL not configured. Please set VITE_ADMIN_PANEL environment variable.");
-                        toast.error("Admin panel URL not configured. Please contact administrator.");
-                        return;
-                    }
+                    const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
                     window.location.href = adminPanelUrl;
                 } else if (onVerificationComplete) {
                     onVerificationComplete(code);
