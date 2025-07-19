@@ -38,7 +38,16 @@ const Login = () => {
 
     try {
       if (state === "Sign Up") {
-        // Call registration API to create user and send verification code
+        // Check if user selected doctor role
+        if (role === "doctor") {
+          // For doctors, redirect directly to admin panel login
+          const adminPanelUrl = import.meta.env.VITE_ADMIN_PANEL || "https://prescripto-admin-panel-tan.vercel.app";
+          toast.success("Please login to the admin panel to complete your registration.");
+          window.location.href = `${adminPanelUrl}/login`;
+          return;
+        }
+
+        // For patients, proceed with normal registration
         const registrationData = {
           name,
           email,
@@ -79,8 +88,8 @@ const Login = () => {
             // Don't show success toast for doctors as they're being redirected
             // The redirect is handled in the userLogin function
           } else {
-          toast.success("Login successful!");
-          navigate("/");
+            toast.success("Login successful!");
+            navigate("/");
           }
         } else {
           toast.error(result.message);
