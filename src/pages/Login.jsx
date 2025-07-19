@@ -540,7 +540,7 @@ const Login = () => {
         </div>
       )}
       {showResetModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-40 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg min-w-[320px] flex flex-col items-center">
             <h2 className="text-xl font-semibold mb-2">Reset Password</h2>
             <p className="mb-4 text-gray-600 text-sm">Enter the code sent to your email and your new password.</p>
